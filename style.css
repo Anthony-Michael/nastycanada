@@ -133,6 +133,66 @@ h2 {
     margin: 1rem 0;
 }
 
+/* Coming Soon Section Styles */
+.coming-soon {
+    background-color: rgba(239, 51, 64, 0.1);
+    padding: 2rem;
+    border-radius: 8px;
+    margin-top: 1.5rem;
+    border-left: 4px solid var(--maple-red);
+}
+
+.coming-soon h3 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.8rem;
+    color: var(--maple-red);
+    margin-bottom: 1rem;
+}
+
+.coming-soon p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.newsletter-form input {
+    flex: 1;
+    padding: 0.8rem 1rem;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.newsletter-form input:focus {
+    outline: none;
+    border-color: var(--maple-red);
+}
+
+.notify-button {
+    background: linear-gradient(135deg, var(--maple-red), var(--primary-red));
+    color: var(--primary-white);
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.notify-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(239, 51, 64, 0.3);
+}
+
 .buy-button {
     display: inline-block;
     background: linear-gradient(135deg, var(--maple-red), var(--primary-red));
@@ -213,6 +273,15 @@ footer p {
     .buy-button {
         width: 100%;
         max-width: 300px;
+    }
+
+    .newsletter-form {
+        flex-direction: column;
+    }
+
+    .newsletter-form input,
+    .notify-button {
+        width: 100%;
     }
 }
 
