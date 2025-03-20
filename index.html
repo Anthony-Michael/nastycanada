@@ -6,6 +6,8 @@
     <meta name="description" content="NastyCanada.com - Canada's Too Nasty to Be 51st - Patriotic Canadian apparel and accessories. Show your Canadian pride with our bold designs on hoodies, t-shirts, hats, phone cases and more.">
     <meta name="keywords" content="NastyCanada, Too Nasty to Be 51st, Canadian pride, patriotic Canadian clothing, Canadian apparel, Canadian hoodies, Canadian hats, Canadian phone cases">
     <title>NastyCanada.com | Canada's Too Nasty to Be 51st</title>
+    <!-- Preload critical images -->
+    <link rel="preload" href="images/products/collection-banner.jpg" as="image">
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=GG-9MVSX5815W"></script>
     <script>
@@ -16,6 +18,7 @@
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="preload.js"></script>
     <script src="products-config.js"></script>
     <script src="script.js" defer></script>
 </head>
@@ -139,7 +142,9 @@
     <!-- Product Card Template -->
     <template id="product-card-template">
         <div class="product-card">
-            <img src="" alt="" class="product-image">
+            <div class="product-image-container">
+                <img src="" alt="" class="product-image">
+            </div>
             <h3></h3>
             <p></p>
             <a href="" class="product-button">View on Etsy</a>

@@ -358,16 +358,78 @@ function setupImageLoading() {
             if (img.getAttribute('data-src')) {
                 const realImagePath = img.getAttribute('data-src');
                 const fallbackSrc = img.src;
+                const productName = img.alt;
+                
+                // First check if this image was preloaded successfully in sessionStorage
+                const preloadedPath = sessionStorage.getItem(realImagePath);
+                if (preloadedPath) {
+                    // Use the successful path from preloading
+                    img.src = preloadedPath;
+                    console.log('Using preloaded image: ' + preloadedPath);
+                    return;
+                }
                 
                 // Create a test image to check if the real image exists
                 const testImage = new Image();
+                
+                // Set a timeout to handle very slow loading images
+                const imageTimeout = setTimeout(() => {
+                    console.log('Image load timeout for: ' + realImagePath);
+                    // Keep the fallback/placeholder if loading takes too long
+                    testImage.src = ''; // Cancel the image loading
+                }, 5000); // 5 second timeout
+                
                 testImage.onload = function() {
+                    clearTimeout(imageTimeout);
                     img.src = realImagePath;
+                    console.log('Successfully loaded image: ' + realImagePath);
                 };
+                
                 testImage.onerror = function() {
+                    clearTimeout(imageTimeout);
                     console.log('Product image failed to load, using placeholder: ' + realImagePath);
-                    // Keep the fallback/placeholder
+                    
+                    // Try to load from root /public directory as a fallback
+                    const rootImagePath = '/' + realImagePath;
+                    const secondTestImage = new Image();
+                    
+                    secondTestImage.onload = function() {
+                        img.src = rootImagePath;
+                        console.log('Loaded image from root path: ' + rootImagePath);
+                    };
+                    
+                    secondTestImage.onerror = function() {
+                        // Keep the fallback/placeholder if both paths fail
+                        console.log('Both paths failed for: ' + productName);
+                        
+                        // Add an error indicator to inform the user
+                        const card = img.closest('.product-card');
+                        if (card) {
+                            const errorMsg = document.createElement('div');
+                            errorMsg.className = 'image-error-msg';
+                            errorMsg.innerHTML = 'Image temporarily unavailable';
+                            errorMsg.style.position = 'absolute';
+                            errorMsg.style.top = '10px';
+                            errorMsg.style.right = '10px';
+                            errorMsg.style.background = 'rgba(0,0,0,0.6)';
+                            errorMsg.style.color = 'white';
+                            errorMsg.style.padding = '5px 10px';
+                            errorMsg.style.borderRadius = '4px';
+                            errorMsg.style.fontSize = '12px';
+                            card.style.position = 'relative';
+                            card.appendChild(errorMsg);
+                            
+                            // Remove the error message after 5 seconds
+                            setTimeout(() => {
+                                errorMsg.remove();
+                            }, 5000);
+                        }
+                    };
+                    
+                    secondTestImage.src = rootImagePath;
                 };
+                
+                // Start loading the image
                 testImage.src = realImagePath;
             }
         });
