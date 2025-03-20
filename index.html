@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Coming soon: The viral Too Nasty to Be 51st t-shirt, inspired by Trump's Canada comment. Show your Canadian pride with this bold patriotic tee. Sign up for updates!">
-    <meta name="keywords" content="Too Nasty to Be 51st shirt, Nasty Canada t-shirt, 51st state Canada joke, Canadian pride shirt, patriotic Canadian clothing">
-    <title>Nasty Canada T-Shirt | Too Nasty to Be 51st | Coming Soon</title>
+    <meta name="description" content="NastyCanada.com - Canada's Too Nasty to Be 51st - Patriotic Canadian apparel and accessories. Show your Canadian pride with our bold designs on hoodies, t-shirts, hats, phone cases and more.">
+    <meta name="keywords" content="NastyCanada, Too Nasty to Be 51st, Canadian pride, patriotic Canadian clothing, Canadian apparel, Canadian hoodies, Canadian hats, Canadian phone cases">
+    <title>NastyCanada.com | Canada's Too Nasty to Be 51st</title>
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=GG-9MVSX5815W"></script>
     <script>
@@ -14,47 +14,136 @@
         gtag('js', new Date());
         gtag('config', 'GG-9MVSX5815W');
     </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="products-config.js"></script>
     <script src="script.js" defer></script>
 </head>
 <body>
     <header>
-        <div class="header-content">
-            <h1>Too Nasty to Be 51st - Canadian Pride T-Shirt</h1>
-            <p class="subheading">Bold Canadian Pride Meets Attitude</p>
+        <nav class="navbar">
+            <div class="logo">NastyCanada</div>
+            <div class="nav-links">
+                <a href="#products">Products</a>
+                <a href="#about">About</a>
+                <a href="#faq">FAQ</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </nav>
+        <div class="hero">
+            <h1>Canada's Too Nasty to Be 51st</h1>
+            <p class="subheading">Bold Canadian Pride on Hoodies, Tees, Hats, Phone Cases & More</p>
+            <a href="https://www.etsy.com/shop/NastyCanada" class="cta-button">Shop Now</a>
         </div>
     </header>
 
     <main>
-        <section class="product-section">
-            <img src="https://placehold.co/500x600/red/white?text=T-Shirt+Preview" alt="Too Nasty to Be 51st Canadian Pride T-Shirt - Patriotic Tee" class="product-image">
-            <div class="product-details">
-                <h2>Make a Statement with Canadian Pride T-Shirt</h2>
-                <p class="product-description">Show your Canadian pride with our bold and unapologetic 'Too Nasty to Be 51st' t-shirt. This viral, conversation-starting design perfectly captures our independent spirit and fierce national pride in response to recent political comments.</p>
-                
-                <ul class="features-list">
-                    <li>Premium quality 100% cotton</li>
-                    <li>Bold, durable print that lasts</li>
-                    <li>Available in sizes S-3XL</li>
-                    <li>Proudly made in Canada</li>
-                    <li>Fast shipping across North America</li>
-                </ul>
+        <section id="products" class="featured-products">
+            <h2>Featured Products</h2>
+            <div class="product-grid" id="product-container">
+                <!-- Product cards will be dynamically inserted here -->
+            </div>
+        </section>
 
-                <div class="coming-soon">
-                    <h3>Coming Soon!</h3>
-                    <p>Elbows up, Canada! Our "Too Nasty to Be 51st" t-shirts are currently in production. Sign up for email updates to be the first to know when they're available.</p>
-                    
-                    <div class="newsletter-form">
-                        <input type="email" placeholder="Your email address" aria-label="Email for updates">
-                        <button type="button" class="notify-button">Notify Me</button>
-                    </div>
+        <section id="about" class="about-section">
+            <div class="about-content">
+                <h2>About NastyCanada</h2>
+                <p>NastyCanada was born from a moment that united Canadians in pride and humor. When our neighbors to the south suggested Canada might become the 51st state, we responded with our signature polite defiance: "Canada's Too Nasty to Be 51st."</p>
+                <p>What started as a viral t-shirt design has grown into a full collection of Canadian-themed apparel and accessories. Our brand embodies the spirit of Canadian independence, resilience, and that unique blend of politeness and attitude that makes Canada, well, nasty in all the right ways.</p>
+                <p>Every product in our collection - from hoodies and tees to hats and phone cases - is designed with quality, comfort, and Canadian pride in mind. Wear your NastyCanada gear with confidence, knowing you're representing the great white north with style.</p>
+            </div>
+        </section>
+
+        <section id="signup" class="signup-section">
+            <div class="signup-content">
+                <h2>Join the NastyCanada Community</h2>
+                <p>Sign up for exclusive deals, new product announcements, and more Canadian content.</p>
+                <form class="email-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="faq" class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3>Shipping Information</h3>
+                    <p>We ship to both Canada and the United States. Standard shipping takes 3-5 business days within Canada and 7-10 business days to the US. Expedited shipping options are available at checkout.</p>
                 </div>
+                <div class="faq-item">
+                    <h3>Returns & Exchanges</h3>
+                    <p>We accept returns within 30 days of purchase. Items must be unworn and in original packaging. Contact us for a return authorization before shipping items back.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Product Quality</h3>
+                    <p>All NastyCanada products are made with premium materials and designed to last. Our apparel features durable printing that won't fade or crack with proper care.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>About Our Store</h3>
+                    <p>NastyCanada operates primarily through our Etsy store, where we've earned a reputation for quality products and excellent customer service.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="upload-info" class="upload-info-section">
+            <div class="upload-content">
+                <h2>Uploading Your Product Photos</h2>
+                <p>To replace the placeholder images with your actual product photos:</p>
+                <ol class="upload-steps">
+                    <li>Navigate to the <code>/public/images/products/</code> folder in your Vercel project</li>
+                    <li>Upload your product images to this folder</li>
+                    <li>Name your images using these exact filenames:
+                        <ul>
+                            <li><code>hoodie.jpg</code> - For your NastyCanada hoodie</li>
+                            <li><code>tshirt.jpg</code> - For your NastyCanada t-shirt</li>
+                            <li><code>snapback.jpg</code> - For your NastyCanada hat</li>
+                            <li><code>phone-case.jpg</code> - For your iPhone case</li>
+                            <li><code>collection-banner.jpg</code> - For the email signup background</li>
+                        </ul>
+                    </li>
+                    <li>The website will automatically use your new images once uploaded</li>
+                </ol>
+                <p class="note">For optimal performance, resize your images to 800×900 pixels and compress them before uploading.</p>
             </div>
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2024 NastyCanada.com - All rights reserved</p>
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3>NastyCanada</h3>
+                <p>Canada's Too Nasty to Be 51st</p>
+            </div>
+            <div class="footer-links">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="https://instagram.com/" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://facebook.com/" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="https://twitter.com/" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://tiktok.com/" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-contact">
+                <h4>Contact Us</h4>
+                <p>Email: info@nastycanada.com</p>
+                <p>Visit our <a href="https://www.etsy.com/shop/NastyCanada">Etsy Shop</a></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 NastyCanada.com - All rights reserved</p>
+        </div>
     </footer>
+
+    <!-- Product Card Template -->
+    <template id="product-card-template">
+        <div class="product-card">
+            <img src="" alt="" class="product-image">
+            <h3></h3>
+            <p></p>
+            <a href="" class="product-button">View on Etsy</a>
+        </div>
+    </template>
 </body>
 </html> 

@@ -1,5 +1,26 @@
 // Wait for DOM to fully load
 document.addEventListener('DOMContentLoaded', function() {
+    // Generate product cards from configuration
+    generateProductCards();
+    
+    // Product hover effects
+    setupProductHoverEffects();
+    
+    // Implement smooth scrolling for navigation links
+    setupSmoothScrolling();
+    
+    // Form submission handler
+    setupEmailForm();
+    
+    // Add a simple sticky navigation on scroll
+    setupStickyNavigation();
+    
+    // Add animated reveal effect for sections as user scrolls
+    setupScrollAnimations();
+    
+    // Handle product image loading
+    setupImageLoading();
+    
     // Select the notify button
     const notifyButton = document.querySelector('.notify-button');
     const emailInput = document.querySelector('.newsletter-form input');
@@ -134,4 +155,227 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add scroll event listener
     window.addEventListener('scroll', animateOnScroll);
-}); 
+});
+
+// Generate product cards from the configuration
+function generateProductCards() {
+    const productContainer = document.getElementById('product-container');
+    const template = document.getElementById('product-card-template');
+    
+    if (!productContainer || !template || !nastyProducts) return;
+    
+    // Clear any existing products
+    productContainer.innerHTML = '';
+    
+    // Generate a card for each product in the configuration
+    Object.values(nastyProducts).forEach(product => {
+        const clone = template.content.cloneNode(true);
+        
+        // Set the product image with fallback
+        const img = clone.querySelector('.product-image');
+        img.src = product.placeholder;
+        img.setAttribute('data-src', product.image);
+        img.alt = product.name;
+        
+        // Set the product name and description
+        clone.querySelector('h3').textContent = product.name;
+        clone.querySelector('p').textContent = product.description;
+        
+        // Set the Etsy link
+        clone.querySelector('.product-button').href = product.etsyLink;
+        
+        // Add the card to the container
+        productContainer.appendChild(clone);
+    });
+}
+
+// Setup product hover effects
+function setupProductHoverEffects() {
+    // This will be called after the products are generated
+    const productCards = document.querySelectorAll('.product-card');
+    
+    productCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            const image = card.querySelector('.product-image');
+            if (image) image.style.transform = 'scale(1.05)';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            const image = card.querySelector('.product-image');
+            if (image) image.style.transform = 'scale(1)';
+        });
+    });
+}
+
+// Setup smooth scrolling for navigation links
+function setupSmoothScrolling() {
+    const navLinks = document.querySelectorAll('.nav-links a');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', event => {
+            event.preventDefault();
+            
+            const targetId = link.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            
+            if (targetSection) {
+                window.scrollTo({
+                    top: targetSection.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+}
+
+// Setup email form submission
+function setupEmailForm() {
+    const emailForm = document.querySelector('.email-form');
+    
+    if (emailForm) {
+        emailForm.addEventListener('submit', event => {
+            event.preventDefault();
+            
+            const emailInput = emailForm.querySelector('input[type="email"]');
+            const email = emailInput.value.trim();
+            
+            if (email && isValidEmail(email)) {
+                // Create popup element for success message
+                const popup = document.createElement('div');
+                popup.className = 'notification-popup';
+                popup.textContent = 'Thanks for subscribing! We\'ll keep you updated on our latest products.';
+                
+                // Style the popup
+                popup.style.position = 'fixed';
+                popup.style.top = '50%';
+                popup.style.left = '50%';
+                popup.style.transform = 'translate(-50%, -50%)';
+                popup.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+                popup.style.color = 'white';
+                popup.style.padding = '20px 30px';
+                popup.style.borderRadius = '8px';
+                popup.style.zIndex = '1000';
+                popup.style.fontWeight = 'bold';
+                popup.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.3)';
+                popup.style.opacity = '0';
+                popup.style.transition = 'opacity 0.3s ease';
+                
+                // Add to body
+                document.body.appendChild(popup);
+                
+                // Trigger animation
+                setTimeout(() => {
+                    popup.style.opacity = '1';
+                }, 10);
+                
+                // Remove popup after delay
+                setTimeout(() => {
+                    popup.style.opacity = '0';
+                    setTimeout(() => {
+                        document.body.removeChild(popup);
+                    }, 300);
+                }, 3000);
+                
+                // Clear the input
+                emailInput.value = '';
+            } else {
+                // Highlight input if invalid
+                emailInput.style.borderColor = 'var(--primary-red)';
+                emailInput.style.backgroundColor = 'rgba(255, 0, 0, 0.05)';
+                
+                setTimeout(() => {
+                    emailInput.style.borderColor = '';
+                    emailInput.style.backgroundColor = '';
+                }, 1500);
+            }
+        });
+        
+        // Clear error styling when typing
+        const emailInput = emailForm.querySelector('input[type="email"]');
+        if (emailInput) {
+            emailInput.addEventListener('input', function() {
+                this.style.borderColor = '';
+                this.style.backgroundColor = '';
+            });
+        }
+    }
+}
+
+// Setup sticky navigation
+function setupStickyNavigation() {
+    const navbar = document.querySelector('.navbar');
+    const hero = document.querySelector('.hero');
+    
+    if (navbar && hero) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('navbar-sticky');
+            } else {
+                navbar.classList.remove('navbar-sticky');
+            }
+        });
+    }
+}
+
+// Setup scroll animations
+function setupScrollAnimations() {
+    const revealElements = document.querySelectorAll('.featured-products, .about-section, .signup-section, .faq-section, .upload-info-section');
+    
+    const revealElementsOnScroll = () => {
+        const windowHeight = window.innerHeight;
+        
+        revealElements.forEach(element => {
+            const elementTop = element.getBoundingClientRect().top;
+            
+            if (elementTop < windowHeight - 100) {
+                element.classList.add('revealed');
+            }
+        });
+    };
+    
+    // Add CSS class for the animation
+    revealElements.forEach(element => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        element.style.transition = 'opacity 0.6s ease, transform 0.8s ease';
+    });
+    
+    // Add the revealed class to trigger animation
+    window.addEventListener('scroll', revealElementsOnScroll);
+    
+    // Initial check in case elements are already in view
+    revealElementsOnScroll();
+}
+
+// Handle product image loading
+function setupImageLoading() {
+    // This will be called after a short delay to ensure all product cards are generated
+    setTimeout(() => {
+        const productImages = document.querySelectorAll('.product-image');
+        
+        productImages.forEach(img => {
+            // Check if there's a data-src attribute (for real product images)
+            if (img.getAttribute('data-src')) {
+                const realImagePath = img.getAttribute('data-src');
+                const fallbackSrc = img.src;
+                
+                // Create a test image to check if the real image exists
+                const testImage = new Image();
+                testImage.onload = function() {
+                    img.src = realImagePath;
+                };
+                testImage.onerror = function() {
+                    console.log('Product image failed to load, using placeholder: ' + realImagePath);
+                    // Keep the fallback/placeholder
+                };
+                testImage.src = realImagePath;
+            }
+        });
+    }, 100);
+}
+
+// Helper function to validate email format
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+} 
