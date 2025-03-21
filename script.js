@@ -353,105 +353,96 @@ function setupImageLoading() {
     const images = document.querySelectorAll('.product-image');
     console.log(`DEBUG: Found ${images.length} product images to process`);
     
+    // We'll use this map for direct image assignments
+    const imageMap = {
+        "nastycanada t-shirt": "/images/products/tshirt.jpg",
+        "nastycanada hoodie": "/images/products/hoodie.jpg", 
+        "snapback hats": "/images/products/snapbackhat.jpg",
+        "dad hats": "/images/products/dadhat.jpg",
+        "iphone cases": "/images/products/phone-case.jpg"
+    };
+    
+    // Debug direct image loading by trying to load each image directly
+    console.log("DEBUG: Testing direct image loading");
+    for (const [productName, imagePath] of Object.entries(imageMap)) {
+        const testImg = new Image();
+        testImg.onload = () => {
+            console.log(`DEBUG: Direct load successful for ${imagePath}`);
+        };
+        testImg.onerror = () => {
+            console.log(`DEBUG: Direct load FAILED for ${imagePath}`);
+            
+            // Try without leading slash
+            const altPath = imagePath.substring(1);
+            const altImg = new Image();
+            altImg.onload = () => {
+                console.log(`DEBUG: Alternative load successful for ${altPath}`);
+            };
+            altImg.onerror = () => {
+                console.log(`DEBUG: Alternative load FAILED for ${altPath}`);
+            };
+            altImg.src = altPath;
+        };
+        testImg.src = imagePath;
+    }
+    
     images.forEach((img, index) => {
         console.log(`DEBUG: Processing image ${index + 1}`);
-        // Check if the image already has a src attribute with content
-        if (img.src && img.src !== document.location.href && !img.src.includes('placehold.co')) {
-            console.log(`DEBUG: Image ${index + 1} already has a valid src: ${img.src}`);
-            return; // Skip images that already have a valid src
+        
+        // Get the product title from the card
+        const card = img.closest('.product-card');
+        const titleElement = card.querySelector('h3');
+        
+        if (!titleElement || !titleElement.textContent) {
+            console.log(`DEBUG: No title found for image ${index + 1}`);
+            return;
         }
         
-        // Get the real image path from data-src or determine it from parent element
-        const cardTitle = img.closest('.product-card').querySelector('h3').textContent.toLowerCase();
+        const cardTitle = titleElement.textContent.toLowerCase();
         console.log(`DEBUG: Card title for image ${index + 1}: "${cardTitle}"`);
-        let realImagePath;
         
-        // Map product titles to image filenames
-        if (cardTitle.includes('t-shirt') || cardTitle.includes('tee')) {
-            realImagePath = '/images/products/tshirt.jpg';
-        } else if (cardTitle.includes('hoodie') || cardTitle.includes('sweatshirt')) {
-            realImagePath = '/images/products/hoodie.jpg';
-        } else if (cardTitle.includes('snapback') || cardTitle.includes('cap')) {
-            realImagePath = '/images/products/snapbackhat.jpg';
-        } else if (cardTitle.includes('dad hat') || cardTitle.includes('baseball cap')) {
-            realImagePath = '/images/products/dadhat.jpg';
-        } else if (cardTitle.includes('phone') || cardTitle.includes('iphone') || cardTitle.includes('case')) {
-            realImagePath = '/images/products/phone-case.jpg';
-        } else {
-            realImagePath = '/images/products/tshirt.jpg'; // Default fallback
+        // Find the right image path for this product
+        let imagePath = null;
+        for (const [productName, path] of Object.entries(imageMap)) {
+            if (cardTitle.includes(productName.toLowerCase())) {
+                imagePath = path;
+                break;
+            }
         }
-        console.log(`DEBUG: Selected image path for ${index + 1}: ${realImagePath}`);
         
-        // Check if preloaded
-        const preloadedPath = sessionStorage.getItem(realImagePath);
-        console.log(`DEBUG: Preloaded path for ${realImagePath}: ${preloadedPath || 'not found'}`);
+        // Default to t-shirt if no match found
+        if (!imagePath) {
+            imagePath = "/images/products/tshirt.jpg";
+        }
         
-        // Set timeout for slow image loading
-        const timeout = setTimeout(() => {
-            console.log(`DEBUG: Image load timeout for: ${realImagePath}`);
-            // Try alternative path if initial load fails
-            tryAlternativePath();
-        }, 5000);
+        console.log(`DEBUG: Selected image path for ${cardTitle}: ${imagePath}`);
         
         // Try to load the image
-        if (preloadedPath) {
-            img.src = preloadedPath;
-            console.log(`DEBUG: Using preloaded image: ${preloadedPath}`);
-            clearTimeout(timeout);
-        } else {
-            console.log(`DEBUG: Setting img.src to: ${realImagePath}`);
-            img.src = realImagePath;
+        img.onerror = () => {
+            console.log(`DEBUG: Image load error for: ${imagePath}`);
             
-            // Handle load event
-            img.onload = () => {
-                clearTimeout(timeout);
-                console.log(`DEBUG: Image loaded successfully: ${realImagePath}`);
-            };
+            // Try without leading slash
+            const altPath = imagePath.substring(1);
+            console.log(`DEBUG: Trying alternative path: ${altPath}`);
+            img.src = altPath;
             
-            // Handle error event
+            // Handle error for the alternative path
             img.onerror = () => {
-                console.log(`DEBUG: Image load error for: ${realImagePath}`);
-                tryAlternativePath();
-            };
-        }
-        
-        // Function to try alternative path
-        function tryAlternativePath() {
-            console.log(`DEBUG: Trying alternative path for: ${realImagePath}`);
-            // Test if the real image exists with a different path (from root)
-            const testImg = new Image();
-            const rootPath = realImagePath.startsWith('/') ? realImagePath.substring(1) : realImagePath;
-            console.log(`DEBUG: Testing alternative path: ${rootPath}`);
-            
-            testImg.onload = () => {
-                // Image exists with root path
-                img.src = rootPath;
-                console.log(`DEBUG: Alternative path successful: ${rootPath}`);
-                clearTimeout(timeout);
-            };
-            
-            testImg.onerror = () => {
-                // Both paths failed, show error message
-                console.error(`DEBUG: Failed to load image: ${realImagePath}`);
+                console.error(`DEBUG: Failed to load image with both paths: ${imagePath} and ${altPath}`);
+                
+                // Show a placeholder as final fallback
+                img.src = "https://placehold.co/400x450/red/white?text=Image+Not+Found";
                 
                 // Add error message to product card
                 const errorMsg = document.createElement('div');
                 errorMsg.className = 'image-error-message';
                 errorMsg.textContent = 'Image not available';
                 img.parentNode.appendChild(errorMsg);
-                
-                // Remove error message after 5 seconds
-                setTimeout(() => {
-                    if (errorMsg.parentNode) {
-                        errorMsg.parentNode.removeChild(errorMsg);
-                    }
-                }, 5000);
-                
-                clearTimeout(timeout);
             };
-            
-            testImg.src = rootPath;
-        }
+        };
+        
+        img.src = imagePath;
+        console.log(`DEBUG: Set image src to: ${imagePath}`);
     });
 }
 
