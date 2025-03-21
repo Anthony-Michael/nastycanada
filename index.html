@@ -150,5 +150,44 @@
             <a href="" class="product-button">View on Etsy</a>
         </div>
     </template>
+    
+    <!-- Debug Script for Image Loading -->
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log("DEBUG: Document loaded");
+            
+            // Wait a bit for images to be processed by the main script
+            setTimeout(function() {
+                console.log("DEBUG: Checking image paths");
+                const images = document.querySelectorAll('.product-image');
+                
+                if (images.length === 0) {
+                    console.log("DEBUG: No product images found on the page");
+                } else {
+                    console.log(`DEBUG: Found ${images.length} product images`);
+                    
+                    images.forEach((img, index) => {
+                        console.log(`Image ${index + 1}:`, {
+                            src: img.src,
+                            complete: img.complete,
+                            naturalWidth: img.naturalWidth,
+                            elementWidth: img.width,
+                            className: img.className,
+                            displayStyle: window.getComputedStyle(img).display,
+                            visibilityStyle: window.getComputedStyle(img).visibility,
+                            parentDisplay: window.getComputedStyle(img.parentElement).display
+                        });
+                    });
+                }
+                
+                // Check sessionStorage for preloaded images
+                console.log("DEBUG: Checking sessionStorage for preloaded images");
+                for (let i = 0; i < sessionStorage.length; i++) {
+                    const key = sessionStorage.key(i);
+                    console.log(`${key} => ${sessionStorage.getItem(key)}`);
+                }
+            }, 2000);
+        });
+    </script>
 </body>
 </html> 

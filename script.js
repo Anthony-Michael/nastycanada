@@ -349,16 +349,21 @@ function setupScrollAnimations() {
 
 // Handle product image loading
 function setupImageLoading() {
+    console.log("DEBUG: Setting up image loading");
     const images = document.querySelectorAll('.product-image');
+    console.log(`DEBUG: Found ${images.length} product images to process`);
     
-    images.forEach(img => {
+    images.forEach((img, index) => {
+        console.log(`DEBUG: Processing image ${index + 1}`);
         // Check if the image already has a src attribute with content
         if (img.src && img.src !== document.location.href && !img.src.includes('placehold.co')) {
+            console.log(`DEBUG: Image ${index + 1} already has a valid src: ${img.src}`);
             return; // Skip images that already have a valid src
         }
         
         // Get the real image path from data-src or determine it from parent element
         const cardTitle = img.closest('.product-card').querySelector('h3').textContent.toLowerCase();
+        console.log(`DEBUG: Card title for image ${index + 1}: "${cardTitle}"`);
         let realImagePath;
         
         // Map product titles to image filenames
@@ -375,13 +380,15 @@ function setupImageLoading() {
         } else {
             realImagePath = '/images/products/tshirt.jpg'; // Default fallback
         }
+        console.log(`DEBUG: Selected image path for ${index + 1}: ${realImagePath}`);
         
         // Check if preloaded
         const preloadedPath = sessionStorage.getItem(realImagePath);
+        console.log(`DEBUG: Preloaded path for ${realImagePath}: ${preloadedPath || 'not found'}`);
         
         // Set timeout for slow image loading
         const timeout = setTimeout(() => {
-            console.log('Image load timeout for: ' + realImagePath);
+            console.log(`DEBUG: Image load timeout for: ${realImagePath}`);
             // Try alternative path if initial load fails
             tryAlternativePath();
         }, 5000);
@@ -389,40 +396,43 @@ function setupImageLoading() {
         // Try to load the image
         if (preloadedPath) {
             img.src = preloadedPath;
-            console.log('Using preloaded image: ' + preloadedPath);
+            console.log(`DEBUG: Using preloaded image: ${preloadedPath}`);
             clearTimeout(timeout);
         } else {
+            console.log(`DEBUG: Setting img.src to: ${realImagePath}`);
             img.src = realImagePath;
             
             // Handle load event
             img.onload = () => {
                 clearTimeout(timeout);
-                console.log('Image loaded successfully: ' + realImagePath);
+                console.log(`DEBUG: Image loaded successfully: ${realImagePath}`);
             };
             
             // Handle error event
             img.onerror = () => {
+                console.log(`DEBUG: Image load error for: ${realImagePath}`);
                 tryAlternativePath();
             };
         }
         
         // Function to try alternative path
         function tryAlternativePath() {
-            console.log('Trying alternative path for: ' + realImagePath);
+            console.log(`DEBUG: Trying alternative path for: ${realImagePath}`);
             // Test if the real image exists with a different path (from root)
             const testImg = new Image();
-            const rootPath = realImagePath;
+            const rootPath = realImagePath.startsWith('/') ? realImagePath.substring(1) : realImagePath;
+            console.log(`DEBUG: Testing alternative path: ${rootPath}`);
             
             testImg.onload = () => {
                 // Image exists with root path
                 img.src = rootPath;
-                console.log('Alternative path successful: ' + rootPath);
+                console.log(`DEBUG: Alternative path successful: ${rootPath}`);
                 clearTimeout(timeout);
             };
             
             testImg.onerror = () => {
                 // Both paths failed, show error message
-                console.error('Failed to load image: ' + realImagePath);
+                console.error(`DEBUG: Failed to load image: ${realImagePath}`);
                 
                 // Add error message to product card
                 const errorMsg = document.createElement('div');
