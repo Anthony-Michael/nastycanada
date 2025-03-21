@@ -2,27 +2,38 @@
 (function() {
     // List of critical images to preload
     const imagesToPreload = [
-        'images/products/tshirt.jpg',
-        'images/products/hoodie.jpg',
-        'images/products/snapbackhat.jpg',
-        'images/products/dadhat.jpg',
-        'images/products/phone-case.jpg',
-        'images/products/collection-banner.jpg'
+        '/images/products/tshirt.jpg',
+        '/images/products/hoodie.jpg',
+        '/images/products/snapbackhat.jpg',
+        '/images/products/dadhat.jpg',
+        '/images/products/phone-case.jpg',
+        '/images/products/collection-banner.jpg'
     ];
     
     // Function to preload an image
     function preloadImage(url) {
         return new Promise((resolve, reject) => {
+            console.log('Preloading image:', url);
             const img = new Image();
-            img.onload = () => resolve(url);
+            img.onload = () => {
+                console.log('Successfully preloaded:', url);
+                resolve(url);
+            };
             img.onerror = () => {
                 console.log('Failed to preload:', url);
-                // Try alternative path from root
-                const rootUrl = '/' + url;
-                const rootImg = new Image();
-                rootImg.onload = () => resolve(rootUrl);
-                rootImg.onerror = () => reject(url);
-                rootImg.src = rootUrl;
+                // Try alternative path without leading slash
+                const altUrl = url.startsWith('/') ? url.substring(1) : url;
+                console.log('Trying alternative path:', altUrl);
+                const altImg = new Image();
+                altImg.onload = () => {
+                    console.log('Alternative path successful:', altUrl);
+                    resolve(altUrl);
+                };
+                altImg.onerror = () => {
+                    console.error('All paths failed for:', url);
+                    reject(url);
+                };
+                altImg.src = altUrl;
             };
             img.src = url;
         });
@@ -41,6 +52,7 @@
             results.forEach((result, index) => {
                 if (result.status === 'fulfilled') {
                     sessionStorage.setItem(imagesToPreload[index], result.value);
+                    console.log('Stored in sessionStorage:', imagesToPreload[index], '=>', result.value);
                 }
             });
         });
