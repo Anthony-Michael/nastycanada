@@ -349,91 +349,100 @@ function setupScrollAnimations() {
 
 // Handle product image loading
 function setupImageLoading() {
-    // This will be called after a short delay to ensure all product cards are generated
-    setTimeout(() => {
-        const productImages = document.querySelectorAll('.product-image');
+    const images = document.querySelectorAll('.product-image');
+    
+    images.forEach(img => {
+        // Check if the image already has a src attribute with content
+        if (img.src && img.src !== document.location.href && !img.src.includes('placehold.co')) {
+            return; // Skip images that already have a valid src
+        }
         
-        productImages.forEach(img => {
-            // Check if there's a data-src attribute (for real product images)
-            if (img.getAttribute('data-src')) {
-                const realImagePath = img.getAttribute('data-src');
-                const fallbackSrc = img.src;
-                const productName = img.alt;
+        // Get the real image path from data-src or determine it from parent element
+        const cardTitle = img.closest('.product-card').querySelector('h3').textContent.toLowerCase();
+        let realImagePath;
+        
+        // Map product titles to image filenames
+        if (cardTitle.includes('t-shirt') || cardTitle.includes('tee')) {
+            realImagePath = '/images/products/tshirt.jpg';
+        } else if (cardTitle.includes('hoodie') || cardTitle.includes('sweatshirt')) {
+            realImagePath = '/images/products/hoodie.jpg';
+        } else if (cardTitle.includes('snapback') || cardTitle.includes('cap')) {
+            realImagePath = '/images/products/snapbackhat.jpg';
+        } else if (cardTitle.includes('dad hat') || cardTitle.includes('baseball cap')) {
+            realImagePath = '/images/products/dadhat.jpg';
+        } else if (cardTitle.includes('phone') || cardTitle.includes('iphone') || cardTitle.includes('case')) {
+            realImagePath = '/images/products/phone-case.jpg';
+        } else {
+            realImagePath = '/images/products/tshirt.jpg'; // Default fallback
+        }
+        
+        // Check if preloaded
+        const preloadedPath = sessionStorage.getItem(realImagePath);
+        
+        // Set timeout for slow image loading
+        const timeout = setTimeout(() => {
+            console.log('Image load timeout for: ' + realImagePath);
+            // Try alternative path if initial load fails
+            tryAlternativePath();
+        }, 5000);
+        
+        // Try to load the image
+        if (preloadedPath) {
+            img.src = preloadedPath;
+            console.log('Using preloaded image: ' + preloadedPath);
+            clearTimeout(timeout);
+        } else {
+            img.src = realImagePath;
+            
+            // Handle load event
+            img.onload = () => {
+                clearTimeout(timeout);
+                console.log('Image loaded successfully: ' + realImagePath);
+            };
+            
+            // Handle error event
+            img.onerror = () => {
+                tryAlternativePath();
+            };
+        }
+        
+        // Function to try alternative path
+        function tryAlternativePath() {
+            console.log('Trying alternative path for: ' + realImagePath);
+            // Test if the real image exists with a different path (from root)
+            const testImg = new Image();
+            const rootPath = realImagePath;
+            
+            testImg.onload = () => {
+                // Image exists with root path
+                img.src = rootPath;
+                console.log('Alternative path successful: ' + rootPath);
+                clearTimeout(timeout);
+            };
+            
+            testImg.onerror = () => {
+                // Both paths failed, show error message
+                console.error('Failed to load image: ' + realImagePath);
                 
-                // First check if this image was preloaded successfully in sessionStorage
-                const preloadedPath = sessionStorage.getItem(realImagePath);
-                if (preloadedPath) {
-                    // Use the successful path from preloading
-                    img.src = preloadedPath;
-                    console.log('Using preloaded image: ' + preloadedPath);
-                    return;
-                }
+                // Add error message to product card
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'image-error-message';
+                errorMsg.textContent = 'Image not available';
+                img.parentNode.appendChild(errorMsg);
                 
-                // Create a test image to check if the real image exists
-                const testImage = new Image();
+                // Remove error message after 5 seconds
+                setTimeout(() => {
+                    if (errorMsg.parentNode) {
+                        errorMsg.parentNode.removeChild(errorMsg);
+                    }
+                }, 5000);
                 
-                // Set a timeout to handle very slow loading images
-                const imageTimeout = setTimeout(() => {
-                    console.log('Image load timeout for: ' + realImagePath);
-                    // Keep the fallback/placeholder if loading takes too long
-                    testImage.src = ''; // Cancel the image loading
-                }, 5000); // 5 second timeout
-                
-                testImage.onload = function() {
-                    clearTimeout(imageTimeout);
-                    img.src = realImagePath;
-                    console.log('Successfully loaded image: ' + realImagePath);
-                };
-                
-                testImage.onerror = function() {
-                    clearTimeout(imageTimeout);
-                    console.log('Product image failed to load, using placeholder: ' + realImagePath);
-                    
-                    // Try to load from root /public directory as a fallback
-                    const rootImagePath = '/' + realImagePath;
-                    const secondTestImage = new Image();
-                    
-                    secondTestImage.onload = function() {
-                        img.src = rootImagePath;
-                        console.log('Loaded image from root path: ' + rootImagePath);
-                    };
-                    
-                    secondTestImage.onerror = function() {
-                        // Keep the fallback/placeholder if both paths fail
-                        console.log('Both paths failed for: ' + productName);
-                        
-                        // Add an error indicator to inform the user
-                        const card = img.closest('.product-card');
-                        if (card) {
-                            const errorMsg = document.createElement('div');
-                            errorMsg.className = 'image-error-msg';
-                            errorMsg.innerHTML = 'Image temporarily unavailable';
-                            errorMsg.style.position = 'absolute';
-                            errorMsg.style.top = '10px';
-                            errorMsg.style.right = '10px';
-                            errorMsg.style.background = 'rgba(0,0,0,0.6)';
-                            errorMsg.style.color = 'white';
-                            errorMsg.style.padding = '5px 10px';
-                            errorMsg.style.borderRadius = '4px';
-                            errorMsg.style.fontSize = '12px';
-                            card.style.position = 'relative';
-                            card.appendChild(errorMsg);
-                            
-                            // Remove the error message after 5 seconds
-                            setTimeout(() => {
-                                errorMsg.remove();
-                            }, 5000);
-                        }
-                    };
-                    
-                    secondTestImage.src = rootImagePath;
-                };
-                
-                // Start loading the image
-                testImage.src = realImagePath;
-            }
-        });
-    }, 100);
+                clearTimeout(timeout);
+            };
+            
+            testImg.src = rootPath;
+        }
+    });
 }
 
 // Helper function to validate email format
